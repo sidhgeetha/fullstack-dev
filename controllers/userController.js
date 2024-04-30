@@ -145,6 +145,14 @@ const userController = {
         },
         config.JWT_SECRET
       );
+      //create cookie with token
+
+      response.cookie("token", token, {
+        httpOnly: true,
+        sameDate: "strict",
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), //24 hours from now
+        secure: true,
+      });
 
       response.json({ message: "User logged in", token });
     } catch (error) {
@@ -156,7 +164,7 @@ const userController = {
     try {
       const userId = request.userId;
 
-      const user = await User.findById(userId).select('-passwordHash');
+      const user = await User.findById(userId).select("-passwordHash");
 
       if (!user) {
         return response.status(404).json({ error: "User not found" });
